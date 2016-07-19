@@ -1,4 +1,4 @@
 module.exports = {
-    'secret': '',
-    'database': ''
+    'secret': 'mynameaborat',
+    'database': 'mongodb://localhost/whosapp'
 };

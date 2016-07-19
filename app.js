@@ -2,19 +2,36 @@
  *  \  /\  /  |----| |    | \__   /__\  |__/ |__/
  *   \/  \/   |    |  \__/  \__] /    \ |    |
  */
+
+// dependencies
 var express = require('express');
-var app = express();
-var router = require('./router');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
-mongoose.connect('localhost', 'whosapp');
+var config = require('./config');
 
-app.use(router);
+// main config
+var app = express();
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(bodyParser.json());                        
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function(req, res, next) {
-  res.status(404).send('Sorry cant find that!');
-});
+// passport config
+var User = require('./user');
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-app.listen(3000, function () {
-  console.log('Listening on port 3000!');
+// mongoose
+mongoose.connect(config.database);
+
+// routes
+var router = require('./routes');
+app.use('/', router);
+
+app.listen(3000, function() {
+  console.log('Express server listening on port 3000');
 });
