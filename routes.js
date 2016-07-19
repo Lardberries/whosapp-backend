@@ -1,6 +1,6 @@
 var express = require('express');
 var passport = require('passport');
-var User = require('./user');
+var User = require('./app/models/user');
 var jwt = require('jsonwebtoken');
 var config = require('./config');
 
