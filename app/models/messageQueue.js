@@ -9,5 +9,5 @@ var messageQueue = module.exports = {};
  * next - callback
  */
 messageQueue.queueMessage = function queueMessage(chatUserIds, message, next) {
-
+  
 };
