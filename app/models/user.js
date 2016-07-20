@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var passportLocalMongoose = require('passport-local-mongoose')
+var bcrypt = require('bcrypt-nodejs');
 
 var schema = new Schema({
     username: {type: String, required: true},
@@ -8,4 +10,6 @@ var schema = new Schema({
     sessionSecret: String
 });
 
-var User = module.exports = mongoose.model('User', schema);
+schema.plugin(passportLocalMongoose);
+
+module.exports = mongoose.model('User', schema);
