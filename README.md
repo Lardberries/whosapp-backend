@@ -119,7 +119,7 @@
 }
 ```
 
-#### GET /chat/:id
+#### GET /chat/`:id`
 - gets the chat with the given id
 - Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
 - example route: `localhost:3000/chat/578f912a2c1c59400431fff8`
@@ -141,7 +141,7 @@
 }
 ```
 
-#### POST /chat/:id/leave
+#### POST /chat/`:id`/leave
 - removes the authenticated user from the specified chat
 - Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
 - example route: `localhost:3000/chat/578f912a2c1c59400431fff8/leave`
@@ -152,7 +152,7 @@
 }
 ```
 
-#### POST /chat/:id/message
+#### POST /chat/`:id`/message
 - adds a message to the chat (what happens when the user hits send)
 - Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
 - example route: `localhost:300/chat/578f912a2c1c59400431fff8/message`
