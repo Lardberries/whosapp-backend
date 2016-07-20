@@ -9,6 +9,7 @@ var Message = require('../models/message');
 var NewMessage = require('../models/newMessage');
 var config = require('../../config');
 var messageQueue = require('../models/messageQueue');
+var emoji = require('../utils/emoji');
 
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -19,18 +20,60 @@ var chatRouter = module.exports = express.Router({mergeParams: true});
  */
 chatRouter.get('/', function (req, res) {
   if (!req.user) {
-    return res.status(403).send('Unauthorized');
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
   Chat.find({users: {$has: req.user._id}}, function (err, results) {
     if (err) {
       console.error(err.stack);
-      return res.status(500).send('Something broke!');
+      return res.status(500).json({ success: false, message: 'Something broke' });
     }
 
-    res.send(_.map(_.sortBy(results, 'lastActivity'), function (chat) {
+    res.send({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
       return _.pick(chat, 'name', '_id');
-    }));
+    })});
+  });
+});
+
+/* POST - /chat/
+ * Creates a new chat
+ * Params:
+ *  - String name - Name for new chat
+ *  - [String] users - users to add, not including current user. Either username or phone number
+ */
+chatRouter.post('/', function (req, res) {
+  if (!req.user) {
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
+  }
+
+  // validation
+  var name = req.body.name;
+
+  if (!name || !name.length || name.length > 30) {
+    return res.status(400).json({ success: false, message: 'Name must be between 1 and 30 characters' });
+  }
+
+  var userEntries = req.body.users;
+
+  // need to convert phone numbers or usernames to ObjectIds
+  async.map(userEntries, User.findFromEntry.bind(User), function (err, userIds) {
+    if (err) {
+      console.error(err.stack);
+      return res.status(500).json({ success: false, message: 'Something broke!' });
+    }
+
+    Chat.create({
+      name: name,
+      users: userIds,
+      emojiSequence: emoji.generateSequence(),
+      emojiCounter: 0
+    }, function (err) {
+      if (err) {
+        console.error(err.stack);
+        return res.status(500).json({ success: false, message: 'Something broke!' });
+      }
+      return resp.send({ success: true });
+    });
   });
 });
 
@@ -39,17 +82,17 @@ chatRouter.get('/', function (req, res) {
  */
 chatRouter.get('/:id', function (req, res) {
   if (!req.user) {
-    return res.status(403).send('Unauthorized');
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
   
   Chat.findOne({users: {$has: req.user._id}, _id: ObjectId(req.param.id)}, function (err, chat) {
     if (err) {
       console.error(err.stack);
-      return res.status(500).send('Something broke!');
+      return res.status(500).json({ success: false, message: 'Something broke!' });
     }
     if (!chat) {
-      return res.status(404).send('Chat not found');
+      return res.status(404).json({ success: false, message: 'Chat not found' });
     }
 
     // need to get name of each user
@@ -60,7 +103,7 @@ chatRouter.get('/:id', function (req, res) {
     }, function onFinish(err, users) {
       if (err) {
         console.error(err.stack);
-        return res.status(500).send('Something broke!');
+        return res.status(500).json({ success: false, message: 'Something broke!' });
       }
       res.send({
         _id: chat._id.toString(),
@@ -75,22 +118,19 @@ chatRouter.get('/:id', function (req, res) {
  */
 chatRouter.get('/:id', function (req, res) {
   if (!req.user) {
-    return res.status(403).send('Unauthorized');
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
   // remove the current user from the given chat
   Chat.findOneAndUpdate({users: {$has: req.user._id}, _id: ObjectId(req.param.id)}, {$pull: {users: req.user._id}}, function (err) {
     if (err) {
       console.error(err.stack);
-      return res.status(500).send('Something broke!');
+      return res.status(500).json({ success: false, message: 'Something broke!' });
     }
 
-    return res.send({status: 'success'});
+    return res.send({ success: true });
   }, {multi: false});
 });
-
-/* POST - /chat/
- */
 
 /* POST - /chat/:id/message
  * Post params:
@@ -98,35 +138,35 @@ chatRouter.get('/:id', function (req, res) {
  */
 chatRouter.get('/:id', function (req, res) {
   if (!req.user) {
-    return res.status(403).send('Unauthorized');
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
   var content = req.body.content;
 
   // validate message
   if (!content) {
-    return res.status(400).send('Message required');
+    return res.status(400).json({ success: false, message: 'Message required' });
   }
 
   if (content.length > config.maxMessageLengt) {
-    return res.status(400).send('Message too long');
+    return res.status(400).json({ success: false, message: 'Message too long' });
   }
 
   // find this chat (validate user)
   Chat.findOne({users: {$has: req.user._id}, _id: ObjectId(req.param.id)}, function (err, chat) {
     if (err) {
       console.error(err.stack);
-      return res.status(500).send('Something broke!');
+      return res.status(500).json({ success: false, message: 'Something broke!' });
     }
     if (!chat) {
-      return res.status(404).send('Chat not found');
+      return res.status(404).json({ success: false, message: 'Chat not found' });
     }
 
     // use the current emoji or a new one?
     Messages.findOne({sender: req.user._id, chatid: chat._id}, null, {sort: {time: -1}}, function (err, lastMessage) {
       if (err) {
         console.error(err.stack);
-        return res.status(500).send('Something broke!');
+        return res.status(500).json({ success: false, message: 'Something broke!' });
       }
 
       var getEmoji;
@@ -145,7 +185,7 @@ chatRouter.get('/:id', function (req, res) {
       getEmoji(function (err, emoji) {
         if (err) {
           console.error(err.stack);
-          return res.status(500).send('Something broke!');
+          return res.status(500).json({ success: false, message: 'Something broke!' });
         }
 
         var message = {
@@ -162,9 +202,9 @@ chatRouter.get('/:id', function (req, res) {
           messageQueue.queueMessage(chatUserId, message, function(err) {
             if (err) {
               console.error(err.stack);
-              return res.status(500).send('Something broke!');
+              return res.status(500).json({ success: false, message: 'Something broke!' });
             }
-            return resp.send({'status': 'success'});
+            return resp.send({ success: true });
           });
         });
       });
