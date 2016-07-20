@@ -171,6 +171,43 @@
 }
 ```
 
+#### GET /chat/`:id`/messages
+- gets all the messages in the chat, sorted
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
+- example route: `localhost:300/chat/578f912a2c1c59400431fff8/messages`
+- example response:
+```javascript
+{
+    success: true,
+    result: [
+        {
+            emoji: "🌽",
+            _id: "578faa84e6c2d1b0056bb645",
+            time: "2016-07-20T16:44:52.784Z",
+            content: "I'm a corn emoji. $waggg."
+        },
+        {
+            emoji: "😊",
+            _id: "578faa58e6c2d1b0056bb644",
+            time: "2016-07-20T16:44:08.265Z",
+            content: "Chillin like a villain! 💪"
+        },
+        {
+            emoji: "🌽",
+            _id: "578faa1be6c2d1b0056bb643",
+            time: "2016-07-20T16:43:07.284Z",
+            content: "Nothing much homie, how you doin?"
+        },
+        {
+            emoji: "😊",
+            _id: "578fa9f8e6c2d1b0056bb642",
+            time: "2016-07-20T16:42:32.348Z",
+            content: "What's up???"
+        }
+    ]
+}
+```
+
 ### WebSocket API
 URL: ws://HOSTNAME/`access-token`
  - Client does not send messages
