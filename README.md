@@ -54,3 +54,15 @@
 	result: 'Invalid credentials.'
 }
 ```
+
+#### GET /user/info
+- returns the necessary user info
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
+- example response
+```javascript
+{
+    username: 'adwyer',
+    name: 'Andy Dwyer',
+    phone: '7908456'
+}
+```
