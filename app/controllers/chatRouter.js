@@ -6,9 +6,8 @@ var mongoose = require('mongoose');
 var Chat = require('../models/chat');
 var User = require('../models/user');
 var Message = require('../models/message');
-var NewMessage = require('../models/newMessage');
 var config = require('../../config');
-var messageQueue = require('../models/messageQueue');
+var messageQueue = require('./messageQueue');
 var emoji = require('../utils/emoji');
 
 var ObjectId = mongoose.Types.ObjectId;
@@ -173,7 +172,7 @@ chatRouter.post('/:id/message', function (req, res) {
     }
 
     // use the current emoji or a new one?
-    Messages.findOne({sender: req.user._id, chatid: chat._id}, null, {sort: {time: -1}}, function (err, lastMessage) {
+    Message.findOne({sender: req.user._id, chatid: chat._id}, null, {sort: {time: -1}}, function (err, lastMessage) {
       if (err) {
         console.error(err.stack);
         return res.status(500).json({ success: false, message: 'Something broke!' });
@@ -181,7 +180,7 @@ chatRouter.post('/:id/message', function (req, res) {
 
       var getEmoji;
 
-      if (!lastMessage || (new Date() - lastMessage.time) > config.emojiTimeout) {
+      if (!lastMessage || (new Date() - lastMessage.time) > config.emojiTimeout || !lastMessage.emoji) {
         // need new emoji
         getEmoji = chat.getNextEmoji.bind(chat);
       } else {
@@ -206,16 +205,13 @@ chatRouter.post('/:id/message', function (req, res) {
           content: content
         };
 
-        // add message to Message collection
-        Message.create(message, function(err) {
-          // add message to NewMessageCollection for all users
-          messageQueue.queueMessage(chatUserId, message, function(err) {
-            if (err) {
-              console.error(err.stack);
-              return res.status(500).json({ success: false, message: 'Something broke!' });
-            }
-            return res.send({ success: true });
-          });
+        // add message
+        messageQueue.queueMessage(chat.users, message, function(err) {
+          if (err) {
+            console.error(err.stack);
+            return res.status(500).json({ success: false, message: 'Something broke!' });
+          }
+          return res.send({ success: true });
         });
       });
     });
