@@ -109,11 +109,13 @@
     result: [
         {
             name: 'The Sanchezes',
-            _id: '578f90a82c1c59400431fff7'
+            _id: '578f90a82c1c59400431fff7',
+            sequenceCounter: 9
         },
         {
             name: 'Internz',
-            _id: '578f912a2c1c59400431fff8'
+            _id: '578f912a2c1c59400431fff8',
+            "sequenceCounter": 12
         }
     ]
 }
@@ -168,3 +170,19 @@
   success: true
 }
 ```
+
+### WebSocket API
+URL: ws://HOSTNAME/`access-token`
+ - Client does not send messages
+ - Every new message in the client's chats (including messages they wrote) is sent over the web socket while the socket is open.
+ - Messages are sent one at a time
+ - Example Message:
+ ```javascript
+ {
+     "_id": "578fa67945047f7825843d97",
+     "seq": 10,
+     "chatid": "578f9e42b7570fcc23b9becb",
+     "emoji": "😇",
+     "time": "2016-07-20T16:27:37.558Z",
+     "content": "Yeah, he is"}
+ ```

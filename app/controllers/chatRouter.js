@@ -28,8 +28,13 @@ chatRouter.get('/', function (req, res) {
       return res.status(500).json({ success: false, message: 'Something broke' });
     }
 
+<<<<<<< HEAD
     res.json({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
       return _.pick(chat, 'name', '_id');
+=======
+    res.send({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
+      return _.pick(chat, 'name', '_id', 'sequenceCounter');
+>>>>>>> c8820e1d0db9439e5b52df04cf15e4b5a1711471
     })});
   });
 });
@@ -221,7 +226,7 @@ chatRouter.post('/:id/message', function (req, res) {
         };
 
         // add message
-        messageQueue.queueMessage(chat.users, message, function(err) {
+        messageQueue.queueMessage(chat, message, function(err) {
           if (err) {
             console.error(err.stack);
             return res.status(500).json({ success: false, message: 'Something broke!' });
