@@ -46,12 +46,17 @@ userRouter.post('/register', function(req, res) {
 });
 
 // POST - /user/login
-userRouter.post('/login', passport.authenticate('local'), function(req, res) {
+userRouter.post('/login', passport.authenticate('local', { failureRedirect: '/user/failedLogin' }), function(req, res) {
   var token = jwt.sign(req.user._id, config.secret, {
     expiresIn: "1d"
   });
 
   return res.json({ success: true, result: token });
+});
+
+// GET - /failedLogin
+userRouter.get('/failedLogin', function(req, res) {
+  return res.json({ success: false, message: 'Invalid credentials.' });
 });
 
 module.exports = userRouter;
