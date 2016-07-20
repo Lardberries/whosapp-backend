@@ -95,6 +95,11 @@ chatRouter.get('/:id', function (req, res) {
     return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
   
+  // invalid id param
+  if (!ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ success: false, message: 'Invalid ObjectId parameter' });
+  }
+
   Chat.findOne({users: req.user._id, _id: ObjectId(req.params.id)}, function (err, chat) {
     if (err) {
       console.error(err.stack);
@@ -130,6 +135,11 @@ chatRouter.post('/:id/leave', function (req, res) {
     return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
+  // invalid id param
+  if (!ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ success: false, message: 'Invalid ObjectId parameter' });
+  }
+
   // remove the current user from the given chat
   Chat.findOneAndUpdate({users: req.user._id, _id: ObjectId(req.params.id)}, {$pull: {users: req.user._id}}, function (err) {
     if (err) {
@@ -159,6 +169,11 @@ chatRouter.post('/:id/message', function (req, res) {
 
   if (content.length > config.maxMessageLengt) {
     return res.status(400).json({ success: false, message: 'Message too long' });
+  }
+
+  // invalid id param
+  if (!ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ success: false, message: 'Invalid ObjectId parameter' });
   }
 
   // find this chat (validate user)
