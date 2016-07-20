@@ -19,6 +19,10 @@ app.use(passport.session());
 app.use(bodyParser.json());                        
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// auth middleware
+var auth = require('./auth');
+app.use(auth);
+
 app.use('/user', require('./app/controllers/userRouter'));
 app.use('/chat', require('./app/controllers/chatRouter'));
 
@@ -30,10 +34,6 @@ passport.deserializeUser(User.deserializeUser());
 
 // mongoose
 mongoose.connect(config.database);
-
-// routes
-var router = require('./routes');
-app.use('/', router);
 
 app.listen(3000, function() {
   console.log('Express server listening on port 3000');
