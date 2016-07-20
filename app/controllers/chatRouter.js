@@ -28,7 +28,7 @@ chatRouter.get('/', function (req, res) {
       return res.status(500).json({ success: false, message: 'Something broke' });
     }
 
-    res.send({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
+    res.json({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
       return _.pick(chat, 'name', '_id');
     })});
   });
@@ -61,7 +61,7 @@ chatRouter.post('/', function (req, res) {
     for (var i = 0; i < users.length; i++) {
       var user = users[i];
       if (!user) {
-        return res.send({ success: false, message: 'Entry not found', entry: userEntries[i] });
+        return res.json({ success: false, message: 'Entry not found', entry: userEntries[i] });
       } else {
         userIds.push(user._id);
       }
@@ -82,7 +82,7 @@ chatRouter.post('/', function (req, res) {
         console.error(err.stack);
         return res.status(500).json({ success: false, message: 'Something broke!' });
       }
-      return res.send({ success: true });
+      return res.json({ success: true });
     });
   });
 });
@@ -119,7 +119,7 @@ chatRouter.get('/:id', function (req, res) {
         console.error(err.stack);
         return res.status(500).json({ success: false, message: 'Something broke!' });
       }
-      res.send({
+      res.json({
         _id: chat._id.toString(),
         name: chat.name,
         users: users
@@ -147,7 +147,7 @@ chatRouter.post('/:id/leave', function (req, res) {
       return res.status(500).json({ success: false, message: 'Something broke!' });
     }
 
-    return res.send({ success: true });
+    return res.json({ success: true });
   }, {multi: false});
 });
 
@@ -226,11 +226,37 @@ chatRouter.post('/:id/message', function (req, res) {
             console.error(err.stack);
             return res.status(500).json({ success: false, message: 'Something broke!' });
           }
-          return res.send({ success: true });
+          return res.json({ success: true });
         });
       });
     });
   }, {multi: false});
+});
+
+/* GET - /chat/:id/messages
+ * gets all the messages for the given chat
+ */
+chatRouter.get('/:id/messages', function(req, res) {
+  if (!req.user) {
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
+  }
+  
+  // invalid id param
+  if (!ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ success: false, message: 'Invalid ObjectId parameter' });
+  }
+
+  // get them messages
+  Message.find({ chatid: ObjectId(req.params.id) }, function (err, messages) {
+    if (err) {
+      console.error(err.stack);
+      return res.status(500).json({ success: false, message: 'Something broke' });
+    }
+
+    res.json({ success: true, result: _.map(_.sortBy(messages, 'time'), function (message) {
+      return _.pick(message, 'emoji', '_id', 'seq', 'time', 'content');
+    }).reverse() });
+  });
 });
 
 module.exports = chatRouter;
