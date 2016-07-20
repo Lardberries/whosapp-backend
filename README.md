@@ -6,7 +6,7 @@
 
 ---
 
-### API Guide
+### User API
 
 #### POST /user/register
 - post to this endpoint to create and authenticate a new user
@@ -64,5 +64,57 @@
     username: 'adwyer',
     name: 'Andy Dwyer',
     phone: '7908456'
+}
+```
+
+
+### Chat API
+
+#### POST /chat/
+- creates a new chat
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw, Content-Type: application/json`
+- body content: name and users
+- returns success result
+- example body:
+```javascript
+{
+	name: 'The Cool Kids',
+	users: [
+		'adwyer',
+		'rebecca'
+	]
+}
+```
+- example response:
+```javascript
+{
+    success: true
+}
+```
+- example response:
+```javascript
+{
+    success: false,
+    message: 'Unauthorized'
+}
+```
+
+#### GET /chat/
+- gets all the authenticated user's chats
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
+- example response
+```javascript
+{
+	success: true,
+    result: [
+        {
+            name: 'The Sanchezes',
+            _id: '578f90a82c1c59400431fff7'
+        },
+        {
+            name: 'Internz',
+            _id: '578f912a2c1c59400431fff8'
+        }
+    ]
 }
 ```
