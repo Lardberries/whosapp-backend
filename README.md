@@ -118,3 +118,36 @@
     ]
 }
 ```
+
+#### GET /chat/:id
+- gets the chat with the given id
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
+- example route: `localhost:3000/chat/578f912a2c1c59400431fff8`
+- example response:
+```javascript
+{
+    _id: '578f912a2c1c59400431fff8',
+    name: 'Internz',
+    users: [
+        {
+            name: 'Jake Sanchez',
+            username: 'bigsanch'
+        },
+        {
+            name: 'Rebecca Yuen',
+            username: 'rebecca'
+        }
+    ]
+}
+```
+
+#### POST /chat/:id/leave
+- removes the authenticated user from the specified chat
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
+- examples route: `localhost:3000/chat/578f912a2c1c59400431fff8/leave`
+- example response:
+```javascript
+{
+    "success": true
+}
+```
