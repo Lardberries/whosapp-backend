@@ -8,10 +8,10 @@
 ### API Guide
 
 #### POST /user/register
-post to this endpoint to create and authenticate a new user
-body content: username, password, name and phone
-returns the auth token
-example body: 
+- post to this endpoint to create and authenticate a new user
+- body content: username, password, name and phone
+- returns the auth token
+- example body: 
 ```javascript
 {
 	username: 'adwyer',
@@ -32,15 +32,24 @@ example body:
 - post to this endpoint to authenticate an existing user
 - body content: username and password
 - returns the auth token
-- example body: {
+- example body: 
+```javascript
+{
 	username: 'adwyer',
 	password: 'akaburtmaclin'
 }
-- example response: {
+```
+- example response: 
+```javascript
+{
     success: true,
     result: '6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2MywiZXhwIjoxNDY5MTAx'
 }
-- example response: {
+```
+- example response: 
+```javascript
+{
 	success: false,
 	result: 'Invalid credentials.'
 }
+```
