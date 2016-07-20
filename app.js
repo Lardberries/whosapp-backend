@@ -4,12 +4,13 @@
  */
 var express = require('express');
 var app = express();
-var router = require('./router');
 var mongoose = require('mongoose');
 
 mongoose.connect('localhost', 'whosapp');
 
-app.use(router);
+app.use('/user', require('./app/controllers/userRouter'));
+app.use('/chat', require('./app/controllers/chatRouter'));
+
 
 app.use(function(req, res, next) {
   res.status(404).send('Sorry cant find that!');
