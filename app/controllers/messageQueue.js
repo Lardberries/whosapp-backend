@@ -48,30 +48,38 @@ messageQueue.init = function init(server) {
  * message immediately over a websocket if available or stores in the database for later
  * retrieval.
  * 
- * chatUserIds - An array of ObjectIds for each recipient of the message (including sender)
+ * chat - Chat object
  * message - Plain Object following Message Document Schema
  * cb - callback
  */
-messageQueue.queueMessage = function queueMessage(chatUserIds, message, cb) {
+messageQueue.queueMessage = function queueMessage(chat, message, cb) {
   var newMessageId = ObjectId();
-  var newMessage = _.defaults({_id: newMessageId}, message);
 
-  // save to database
-  Message.create(newMessage, function (err) {
+  chat.getNextSequenceNumber(function (err, newSeq) {
     if (err) {
       cb(err);
     }
 
-    var payload = JSON.stringify(_.omit(message, 'sender'));
+    var newMessage = _.defaults({ _id: newMessageId, seq: newSeq }, message);
 
-    // send out to sockets, best effort :/
-    for (chatUserId of chatUserIds) {
-      var userConnection = openConnections[chatUserId.toString()];
-      if (userConnection) {
-        userConnection.send(payload);
+    // save to database
+    Message.create(newMessage, function (err) {
+      if (err) {
+        console.log('You may have lost sequence number ' + newSeq + ' in chat ' + chat._id);
+        return cb(err);
       }
-    }
 
-    cb();
-  })
+      var payload = JSON.stringify(_.omit(newMessage, 'sender'));
+
+      // send out to sockets, best effort :/
+      for (chatUserId of chat.users) {
+        var userConnection = openConnections[chatUserId.toString()];
+        if (userConnection) {
+          userConnection.send(payload);
+        }
+      }
+
+      cb();
+    });
+  });
 };

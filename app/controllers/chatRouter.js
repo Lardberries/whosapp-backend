@@ -29,7 +29,7 @@ chatRouter.get('/', function (req, res) {
     }
 
     res.send({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
-      return _.pick(chat, 'name', '_id');
+      return _.pick(chat, 'name', '_id', 'sequenceCounter');
     })});
   });
 });
@@ -206,7 +206,7 @@ chatRouter.post('/:id/message', function (req, res) {
         };
 
         // add message
-        messageQueue.queueMessage(chat.users, message, function(err) {
+        messageQueue.queueMessage(chat, message, function(err) {
           if (err) {
             console.error(err.stack);
             return res.status(500).json({ success: false, message: 'Something broke!' });

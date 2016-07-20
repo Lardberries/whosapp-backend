@@ -27,7 +27,6 @@ userRouter.get('/info', function (req, res) {
 
 // POST - /user/register
 userRouter.post('/register', function(req, res) {
-  console.log('1');
   User.register(new User({ username : req.body.username.toLowerCase(), name: req.body.name, phone: req.body.phone }), 
   	req.body.password, function(err, user) {
     if (err) {
