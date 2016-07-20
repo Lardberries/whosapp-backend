@@ -161,7 +161,7 @@
 - example body:
 ```javascript
 {
-  content: 'Hey man what's up??
+  content: "Hey man what's up??"
 }
 ```
 - example response:
