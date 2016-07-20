@@ -26,20 +26,25 @@ userRouter.get('/info', function (req, res) {
 
 // POST - /user/register
 userRouter.post('/register', function(req, res) {
-  User.register(new User({ username : req.body.username, name: req.body.name, phone: req.body.phone }), 
+  console.log('1');
+  User.register(new User({ username : req.body.username.toLowerCase(), name: req.body.name, phone: req.body.phone }), 
   	req.body.password, function(err, user) {
     if (err) {
-      console.log(err);
+      console.log(err.stack);
       return res.json({
       	'Success': false,
-      	'Message': 'That username already exists. Try again.' 
+      	'Message': 'An error occurred.' 
       });
     }
 
     passport.authenticate('local')(req, res, function() {
+      var token = jwt.sign(req.user._id, config.secret, {
+        expiresIn: "1d"
+      });
+
       return res.json({
-      	'Success': true,
-      	'Result': 'User registered successfully'
+        'Success': true,
+        'Result': token
       });
     });
   });
