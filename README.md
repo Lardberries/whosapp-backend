@@ -144,10 +144,27 @@
 #### POST /chat/:id/leave
 - removes the authenticated user from the specified chat
 - Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
-- examples route: `localhost:3000/chat/578f912a2c1c59400431fff8/leave`
+- example route: `localhost:3000/chat/578f912a2c1c59400431fff8/leave`
 - example response:
 ```javascript
 {
     "success": true
+}
+```
+
+#### POST /chat/:id/message
+- adds a message to the chat (what happens when the user hits send)
+- Required headers: `x-access-token: 6IkpXVIsImlkI1x1MDAxOcKTwrlhdCI6MTQ2OTAxNDk2Myw`
+- example route: `localhost:300/chat/578f912a2c1c59400431fff8/message`
+- example body:
+```javascript
+{
+  content: 'Hey man what's up??
+}
+```
+- example response:
+```javascript
+{
+  success: true
 }
 ```
