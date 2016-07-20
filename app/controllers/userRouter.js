@@ -5,7 +5,24 @@ var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var config = require('../../config');
 
+var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
+
 // GET - /user/info
+userRouter.get('/info', function (req, res) {
+  if (!req.user) {
+    return res.status(403).send('Unauthorized');
+  }
+
+  User.findOne({_id: ObjectId(req.user._id)}, function (err, user) {
+    if (err) {
+      console.error(err.stack);
+      return res.status(500).send('Something broke!');
+    }
+
+    res.send(user);
+  });
+});
 
 // POST - /user/register
 userRouter.post('/register', function(req, res) {

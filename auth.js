@@ -20,10 +20,9 @@ module.exports = function(req, res, next) {
           if (user) {
             req.user = user;
           }
+          next();
         });
       }
-
-      next();
     });
   } else {
     next();
