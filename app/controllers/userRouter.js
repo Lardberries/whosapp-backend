@@ -4,6 +4,7 @@ var User = require('../models/user');
 var passport = require('passport');
 var jwt = require('jsonwebtoken');
 var config = require('../../config');
+var _ = require('underscore');
 
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
@@ -20,7 +21,7 @@ userRouter.get('/info', function (req, res) {
       return res.status(500).send('Something broke!');
     }
 
-    res.send(user);
+    res.send(_.pick(user, 'username', 'name', 'phone'));
   });
 });
 
@@ -32,7 +33,7 @@ userRouter.post('/register', function(req, res) {
       console.log(err);
       return res.json({
       	'Success': false,
-      	'Message': 'That username already exists. Try again.' 
+      	'Message': 'An error occurred.' 
       });
     }
 

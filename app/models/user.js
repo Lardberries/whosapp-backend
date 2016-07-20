@@ -13,8 +13,6 @@ var schema = new Schema({
 
 schema.plugin(passportLocalMongoose);
 
-var User = module.exports = mongoose.model('User', schema);
-
 /* Finds a user from either a phone number or a username
  */
 schema.statics.findFromEntry = function findFromEntry(entry, cb) {
@@ -29,9 +27,11 @@ schema.statics.findFromEntry = function findFromEntry(entry, cb) {
     }
     
     // treating as phone number
-    User.findOne({ phone: entry }, cb);
+    this.findOne({ phone: entry }, cb);
   } else {
     // treating as username
-    User.findOne({ username: entry.toLowerCase() }, cb);
+    this.findOne({ username: entry.toLowerCase() }, cb);
   }
 };
+
+var User = module.exports = mongoose.model('User', schema);

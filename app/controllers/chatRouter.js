@@ -23,7 +23,7 @@ chatRouter.get('/', function (req, res) {
     return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
-  Chat.find({users: {$has: req.user._id}}, function (err, results) {
+  Chat.find({users: req.user._id}, function (err, results) {
     if (err) {
       console.error(err.stack);
       return res.status(500).json({ success: false, message: 'Something broke' });
@@ -56,7 +56,18 @@ chatRouter.post('/', function (req, res) {
   var userEntries = req.body.users;
 
   // need to convert phone numbers or usernames to ObjectIds
-  async.map(userEntries, User.findFromEntry.bind(User), function (err, userIds) {
+  async.map(userEntries, User.findFromEntry.bind(User), function (err, users) {
+    var userIds = [req.user._id];
+
+    for (var i = 0; i < users.length; i++) {
+      var user = users[i];
+      if (!user) {
+        return res.send({ success: false, message: 'Entry not found', entry: userEntries[i] });
+      } else {
+        userIds.push(user._id);
+      }
+    }
+
     if (err) {
       console.error(err.stack);
       return res.status(500).json({ success: false, message: 'Something broke!' });
@@ -72,7 +83,7 @@ chatRouter.post('/', function (req, res) {
         console.error(err.stack);
         return res.status(500).json({ success: false, message: 'Something broke!' });
       }
-      return resp.send({ success: true });
+      return res.send({ success: true });
     });
   });
 });
@@ -84,9 +95,8 @@ chatRouter.get('/:id', function (req, res) {
   if (!req.user) {
     return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
-
   
-  Chat.findOne({users: {$has: req.user._id}, _id: ObjectId(req.param.id)}, function (err, chat) {
+  Chat.findOne({users: req.user._id, _id: ObjectId(req.params.id)}, function (err, chat) {
     if (err) {
       console.error(err.stack);
       return res.status(500).json({ success: false, message: 'Something broke!' });
@@ -116,13 +126,13 @@ chatRouter.get('/:id', function (req, res) {
 
 /* POST - /chat/:id/leave
  */
-chatRouter.get('/:id', function (req, res) {
+chatRouter.post('/:id/leave', function (req, res) {
   if (!req.user) {
     return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
 
   // remove the current user from the given chat
-  Chat.findOneAndUpdate({users: {$has: req.user._id}, _id: ObjectId(req.param.id)}, {$pull: {users: req.user._id}}, function (err) {
+  Chat.findOneAndUpdate({users: req.user._id, _id: ObjectId(req.params.id)}, {$pull: {users: req.user._id}}, function (err) {
     if (err) {
       console.error(err.stack);
       return res.status(500).json({ success: false, message: 'Something broke!' });
@@ -136,7 +146,7 @@ chatRouter.get('/:id', function (req, res) {
  * Post params:
  *  - String content
  */
-chatRouter.get('/:id', function (req, res) {
+chatRouter.post('/:id/message', function (req, res) {
   if (!req.user) {
     return res.status(403).json({ success: false, message: 'Unauthorized' });
   }
@@ -153,7 +163,7 @@ chatRouter.get('/:id', function (req, res) {
   }
 
   // find this chat (validate user)
-  Chat.findOne({users: {$has: req.user._id}, _id: ObjectId(req.param.id)}, function (err, chat) {
+  Chat.findOne({users: req.user._id, _id: ObjectId(req.params.id)}, function (err, chat) {
     if (err) {
       console.error(err.stack);
       return res.status(500).json({ success: false, message: 'Something broke!' });
@@ -204,7 +214,7 @@ chatRouter.get('/:id', function (req, res) {
               console.error(err.stack);
               return res.status(500).json({ success: false, message: 'Something broke!' });
             }
-            return resp.send({ success: true });
+            return res.send({ success: true });
           });
         });
       });
