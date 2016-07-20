@@ -12,13 +12,13 @@ var ObjectId = mongoose.Types.ObjectId;
 // GET - /user/info
 userRouter.get('/info', function (req, res) {
   if (!req.user) {
-    return res.status(403).send('Unauthorized');
+    return res.status(403).json({ success: false, message: 'Unauthorized'});
   }
 
   User.findOne({_id: ObjectId(req.user._id)}, function (err, user) {
     if (err) {
       console.error(err.stack);
-      return res.status(500).send('Something broke!');
+      return res.status(500).json({ success: false, message: 'Something broke!' });
     }
 
     res.send(_.pick(user, 'username', 'name', 'phone'));
@@ -32,10 +32,7 @@ userRouter.post('/register', function(req, res) {
   	req.body.password, function(err, user) {
     if (err) {
       console.log(err.stack);
-      return res.json({
-      	'Success': false,
-      	'Message': 'An error occurred.' 
-      });
+      return res.status(500).json({ success: false, message: 'Something broke!' });
     }
 
     passport.authenticate('local')(req, res, function() {
@@ -43,10 +40,7 @@ userRouter.post('/register', function(req, res) {
         expiresIn: "1d"
       });
 
-      return res.json({
-        'Success': true,
-        'Result': token
-      });
+      return res.json({ success: true, result: token });
     });
   });
 });
@@ -57,19 +51,7 @@ userRouter.post('/login', passport.authenticate('local'), function(req, res) {
     expiresIn: "1d"
   });
 
-  return res.json({
-  	'Success': true,
-    'Result': token
-  });
-});
-
-// GET - /user/logout
-userRouter.get('/logout', function(req, res) {
-  req.logout();
-  return res.json({
-  	'Success': true,
-  	'Result': 'You have successfully logged out'
-  });
+  return res.json({ success: true, result: token });
 });
 
 module.exports = userRouter;
