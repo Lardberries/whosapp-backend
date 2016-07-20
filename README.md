@@ -8,10 +8,10 @@
 ### API Guide
 
 #### POST /user/register
-- post to this endpoint to create and authenticate a new user
-- body content: username, password, name and phone
-- returns the auth token
-- example body: 
+post to this endpoint to create and authenticate a new user
+body content: username, password, name and phone
+returns the auth token
+example body: 
 ```javascript
 {
 	username: 'adwyer',
