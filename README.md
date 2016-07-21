@@ -111,13 +111,33 @@
             name: 'The Sanchezes',
             _id: '578f90a82c1c59400431fff7',
             sequenceCounter: 9,
-            emoji: '🌽'
+            emoji: '🌽',
+            "users": [
+                "578f9bc2b7570fcc23b9beca",
+                "578f9b59b7570fcc23b9bec8",
+                "578f9b98b7570fcc23b9bec9"
+            ],
+            "userNames": [
+                "Papa Sanch",
+                "Jakey Sanch",
+                "Momma Sanch"
+            ]
         },
         {
             name: 'Internz',
             _id: '578f912a2c1c59400431fff8',
             "sequenceCounter": 12,
-            emoji: '😊'
+            emoji: '😊',
+            "users": [
+                "578f9bc2b7570fcc23b9bee7",
+                "578f9b59b7570fcc23b9bef2",
+                "578f9b98b7570fcc23b9be7a"
+            ],
+            "userNames": [
+                "Jordan",
+                "Christine",
+                "Mandy"
+            ]
         }
     ]
 }
