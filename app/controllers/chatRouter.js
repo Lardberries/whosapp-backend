@@ -8,7 +8,7 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var config = require('../../config');
 var messageQueue = require('./messageQueue');
-var emoji = require('../utils/emoji');
+var emojiUtil = require('../utils/emoji');
 
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -106,7 +106,7 @@ chatRouter.post('/', function (req, res) {
       return res.status(500).json({ success: false, message: 'Something broke!' });
     }
 
-    var emojiSeq = emoji.generateSequence();
+    var emojiSeq = emojiUtil.generateSequence();
     var emojis = emojiSeq.split(',');
 
     Chat.create({
@@ -293,7 +293,7 @@ chatRouter.get('/:id/messages', function(req, res) {
     }
 
     res.json({ success: true, result: _.map(_.sortBy(messages, 'time'), function (message) {
-      return _.pick(message, 'emoji', '_id', 'seq', 'time', 'content');
+      return _.pick(message, 'emoji', 'color', '_id', 'seq', 'time', 'content');
     }).reverse() });
   });
 });
