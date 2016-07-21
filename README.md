@@ -111,13 +111,33 @@
             name: 'The Sanchezes',
             _id: '578f90a82c1c59400431fff7',
             sequenceCounter: 9,
-            emoji: '🌽'
+            emoji: '🌽',
+            "users": [
+                "578f9bc2b7570fcc23b9beca",
+                "578f9b59b7570fcc23b9bec8",
+                "578f9b98b7570fcc23b9bec9"
+            ],
+            "userNames": [
+                "Papa Sanch",
+                "Jakey Sanch",
+                "Momma Sanch"
+            ]
         },
         {
             name: 'Internz',
             _id: '578f912a2c1c59400431fff8',
             "sequenceCounter": 12,
-            emoji: '😊'
+            emoji: '😊',
+            "users": [
+                "578f9bc2b7570fcc23b9bee7",
+                "578f9b59b7570fcc23b9bef2",
+                "578f9b98b7570fcc23b9be7a"
+            ],
+            "userNames": [
+                "Jordan",
+                "Christine",
+                "Mandy"
+            ]
         }
     ]
 }
@@ -185,24 +205,28 @@
     result: [
         {
             emoji: "🌽",
+            color: "#456798",
             _id: "578faa84e6c2d1b0056bb645",
             time: "2016-07-20T16:44:52.784Z",
             content: "I'm a corn emoji. $waggg."
         },
         {
             emoji: "😊",
+            color: "#2345FF",
             _id: "578faa58e6c2d1b0056bb644",
             time: "2016-07-20T16:44:08.265Z",
             content: "Chillin like a villain! 💪"
         },
         {
             emoji: "🌽",
+            color: "#456798",
             _id: "578faa1be6c2d1b0056bb643",
             time: "2016-07-20T16:43:07.284Z",
             content: "Nothing much homie, how you doin?"
         },
         {
             emoji: "😊",
+            color: "#2345FF",
             _id: "578fa9f8e6c2d1b0056bb642",
             time: "2016-07-20T16:42:32.348Z",
             content: "What's up???"

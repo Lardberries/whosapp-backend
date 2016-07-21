@@ -21,10 +21,7 @@ emoji.generateSequence = function generateSequence() {
 
   return output.join(',');
 }
-<<<<<<< HEAD
 
 emoji.getColorForEmoji = function getColorForEmoji(emoji) {
 	return emojiColorMap[emoji];
 }
-=======
->>>>>>> 0a722fa666946229260193077f21e0fc840f8e97
