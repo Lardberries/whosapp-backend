@@ -28,9 +28,43 @@ chatRouter.get('/', function (req, res) {
       return res.status(500).json({ success: false, message: 'Something broke' });
     }
 
-    res.send({ success: true, result: _.map(_.sortBy(results, 'lastActivity'), function (chat) {
-      return _.pick(chat, 'name', '_id', 'sequenceCounter');
-    })});
+    // get all user ids so we can pair with names
+    var userIds = {};
+
+    for (chat of results) {
+      for (userId of chat.users) {
+        userIds[userId] = true;
+      }
+    }
+
+    var userIdsArr = _.keys(userIds);
+
+    // fetch name for each userid
+    async.map(userIdsArr, function (userId, done) {
+      User.findById(userId, function (err, user) {
+        if (err) {
+          done(err);
+        } else {
+          done(null, user.name)
+        }
+      });
+    }, function (err, userNames) {
+      // construct map of id -> name
+      var idToName = _.object(userIdsArr, userNames);
+
+      // send response
+      res.send({
+        success: true,
+        result: _.map(_.sortBy(results, 'lastActivity'),
+          function (chat) {
+            var chatPicked = _.pick(chat, 'name', '_id', 'sequenceCounter', 'users');
+            chatPicked.userNames = _.map(chatPicked.users, function (userId) {
+              return idToName[userId];
+            });
+            return chatPicked;
+        })
+      });
+    });
   });
 });
 
