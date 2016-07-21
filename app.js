@@ -32,7 +32,7 @@ app.use(function(req, res, next) {
   var token = req.headers['x-access-token'];
   getUserFromToken(token, function (err, user) {
     if (err) {
-      console.err(err);
+      console.error(err);
     }
     req.user = user;
     next();
