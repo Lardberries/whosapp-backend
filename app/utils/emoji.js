@@ -1,6 +1,6 @@
 var emoji = module.exports = {};
 
-var whosappEmojis = emoji.whosappEmojis = '😊,😁,😂,😇,😎,😆,👽,😈,👻,💪,👯,👮,👼,👶,🎈,🎂,💚,🎷,🎩,⚽,🎱,🎓,🏈,☎,📍,🔪,🍜,🍍,🌽,🍨,🍀,🌵,🐉,🐎,🐋,🐕,🐥,🙉,☃,🐼'.split(',');
+var whosappEmojis = emoji.whosappEmojis = '🐙,😁,😂,😇,😎,😆,🐨,🐸,👻,💪,👯,🐻,👼,🐶,🎈,🎂,💚,🎷,🎩,🦁,🎱,🍉,🦄,🐢,😹,🐯,🍜,🍍,🌽,🌮,🍀,🌵,🐉,🐎,🐋,🐕,🐥,🙉,🐰,🐼'.split(',');
 
 /* Generate a randomly ordered sequence of the WhosApp emojis
  * Returns - an array of emojis

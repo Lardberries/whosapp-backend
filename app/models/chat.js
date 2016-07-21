@@ -9,6 +9,7 @@ var schema = new Schema({
   lastActivity: Date,
   emojiSequence: String,
   emojiCounter: Number,
+  emoji: String,
   sequenceCounter: {type: Number, default: 0}
 });
 

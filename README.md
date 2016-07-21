@@ -110,12 +110,14 @@
         {
             name: 'The Sanchezes',
             _id: '578f90a82c1c59400431fff7',
-            sequenceCounter: 9
+            sequenceCounter: 9,
+            emoji: '🌽'
         },
         {
             name: 'Internz',
             _id: '578f912a2c1c59400431fff8',
-            "sequenceCounter": 12
+            "sequenceCounter": 12,
+            emoji: '😊'
         }
     ]
 }
@@ -130,6 +132,7 @@
 {
     _id: '578f912a2c1c59400431fff8',
     name: 'Internz',
+    emoji: '😊',
     users: [
         {
             name: 'Jake Sanchez',
@@ -161,7 +164,7 @@
 - example body:
 ```javascript
 {
-  content: 'Hey man what's up??
+  content: "Hey man what's up??"
 }
 ```
 - example response:

@@ -57,7 +57,7 @@ chatRouter.get('/', function (req, res) {
         success: true,
         result: _.map(_.sortBy(results, 'lastActivity'),
           function (chat) {
-            var chatPicked = _.pick(chat, 'name', '_id', 'sequenceCounter', 'users');
+            var chatPicked = _.pick(chat, 'name', '_id', 'sequenceCounter', 'emoji', 'users');
             chatPicked.userNames = _.map(chatPicked.users, function (userId) {
               return idToName[userId];
             });
@@ -106,11 +106,15 @@ chatRouter.post('/', function (req, res) {
       return res.status(500).json({ success: false, message: 'Something broke!' });
     }
 
+    var emojiSeq = emoji.generateSequence();
+    var emojis = emojiSeq.split(',');
+
     Chat.create({
       name: name,
       users: userIds,
-      emojiSequence: emoji.generateSequence(),
-      emojiCounter: 0
+      emojiSequence: emojiSeq,
+      emojiCounter: 0,
+      emoji: emojis[emojis.length - 1] // last one
     }, function (err) {
       if (err) {
         console.error(err.stack);
@@ -156,6 +160,7 @@ chatRouter.get('/:id', function (req, res) {
       res.json({
         _id: chat._id.toString(),
         name: chat.name,
+        emoji: chat.emoji,
         users: users
       });
     });
